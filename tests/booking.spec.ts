@@ -19,7 +19,6 @@ test("Retrieving an existing Booking by the Booking Id", async ({ request }) => 
   const response = await request.get("https://restful-booker.herokuapp.com/booking/2");
   expect(response).toBeOK();
   const responseBody = await response.json();
-  console.log(responseBody);
   expect(responseBody.firstname).toBe("Sally");
   expect(responseBody.lastname).toBe("Brown");
   expect(responseBody.totalprice).toBe(897);
