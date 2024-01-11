@@ -79,7 +79,7 @@ test.describe("Verify the Create Booking endpoint [POST /booking]", () => {
   });
 });
 
-test.describe.only("Verify the Update Booking endpoint [PUT /booking/:id]", () => {
+test.describe("Verify the Update Booking endpoint [PUT /booking/:id]", () => {
   test("Update an existing Booking with an Authorization Token", async ({ request }) => {
     const updatedBookingObject = {
       firstname: "Luke",
@@ -124,7 +124,7 @@ test.describe.only("Verify the Update Booking endpoint [PUT /booking/:id]", () =
       data: {
         username: "admin",
         password: "password123",
-      }
+      },
     });
     expect(authResponse.status()).toBe(200);
     const authResponseBody = await authResponse.json();
@@ -142,5 +142,44 @@ test.describe.only("Verify the Update Booking endpoint [PUT /booking/:id]", () =
     expect(response.status()).toBe(200);
     const responseBody = await response.json();
     expect(responseBody).toMatchObject(updatedBookingObject);
+  });
+});
+
+test.describe("Verify the Delete Booking endpoint [DELETE /booking/:id]", () => {
+  test("Delete an existing Booking with an Authorization token", async ({ request }) => {
+    let response = await request.delete("https://restful-booker.herokuapp.com/booking/6", {
+      headers: {
+        Authorization: "Basic YWRtaW46cGFzc3dvcmQxMjM=",
+      },
+    });
+    expect(response.status()).toBe(201);
+
+    response = await request.get("https://restful-booker.herokuapp.com/booking/6");
+    expect(response.status()).toBe(404);
+  });
+
+  test("Delete an existing Booking with an Authorization Cookie", async ({ request }) => {
+    // Makes a call to get a Token for Authorization
+    const authResponse = await request.post("https://restful-booker.herokuapp.com/auth", {
+      data: {
+        username: "admin",
+        password: "password123",
+      },
+    });
+    expect(authResponse.status()).toBe(200);
+    const authResponseBody = await authResponse.json();
+    expect(authResponseBody.token).toBeTruthy();
+    const token = authResponseBody.token;
+
+    // Calls Delete Booking endpoint
+    let response = await request.delete("https://restful-booker.herokuapp.com/booking/7", {
+      headers: {
+        Cookie: `token=${token}`,
+      },
+    });
+    expect(response.status()).toBe(201);
+
+    response = await request.get("https://restful-booker.herokuapp.com/booking/7");
+    expect(response.status()).toBe(404);
   });
 });
