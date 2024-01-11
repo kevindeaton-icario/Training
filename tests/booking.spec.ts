@@ -1,7 +1,7 @@
 import { test, expect } from "@playwright/test";
 
-const bookingEndpoint = "https://restful-booker.herokuapp.com/booking"
-const authEndpoint = "https://restful-booker.herokuapp.com/auth"
+const bookingEndpoint = "https://restful-booker.herokuapp.com/booking";
+const authEndpoint = "https://restful-booker.herokuapp.com/auth";
 
 test.describe("Verify the Get Booking Ids endpoint [GET /booking]", () => {
   test("Retrieving all Booking Ids", async ({ request }) => {
@@ -83,6 +83,7 @@ test.describe("Verify the Create Booking endpoint [POST /booking]", () => {
 });
 
 test.describe("Verify the Update Booking endpoint [PUT /booking/:id]", () => {
+  F;
   test("Update an existing Booking with an Authorization Token", async ({ request }) => {
     const updatedBookingObject = {
       firstname: "Luke",
@@ -121,18 +122,7 @@ test.describe("Verify the Update Booking endpoint [PUT /booking/:id]", () => {
       },
       additionalneeds: "DO NOT DISTURB",
     };
-
-    // Makes a call to get a Token for Authorization
-    const authResponse = await request.post(authEndpoint, {
-      data: {
-        username: "admin",
-        password: "password123",
-      },
-    });
-    expect(authResponse.status()).toBe(200);
-    const authResponseBody = await authResponse.json();
-    expect(authResponseBody.token).toBeTruthy();
-    const token = authResponseBody.token;
+    const token = await getAuthorizationCookie(request);
 
     const response = await request.put(`${bookingEndpoint}/2`, {
       headers: {
@@ -162,19 +152,8 @@ test.describe("Verify the Delete Booking endpoint [DELETE /booking/:id]", () => 
   });
 
   test("Delete an existing Booking with an Authorization Cookie", async ({ request }) => {
-    // Makes a call to get a Token for Authorization
-    const authResponse = await request.post(authEndpoint, {
-      data: {
-        username: "admin",
-        password: "password123",
-      },
-    });
-    expect(authResponse.status()).toBe(200);
-    const authResponseBody = await authResponse.json();
-    expect(authResponseBody.token).toBeTruthy();
-    const token = authResponseBody.token;
+    const token = await getAuthorizationCookie(request);
 
-    // Calls Delete Booking endpoint
     let response = await request.delete(`${bookingEndpoint}/7`, {
       headers: {
         Cookie: `token=${token}`,
@@ -186,3 +165,18 @@ test.describe("Verify the Delete Booking endpoint [DELETE /booking/:id]", () => 
     expect(response.status()).toBe(404);
   });
 });
+
+async function getAuthorizationCookie(request): Promise<string> {
+  const authResponse = await request.post(authEndpoint, {
+    data: {
+      username: "admin",
+      password: "password123",
+    },
+  });
+  expect(authResponse.status()).toBe(200);
+  const authResponseBody = await authResponse.json();
+  expect(authResponseBody.token).toBeTruthy();
+  const token = authResponseBody.token;
+
+  return token;
+}
