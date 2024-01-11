@@ -83,7 +83,6 @@ test.describe("Verify the Create Booking endpoint [POST /booking]", () => {
 });
 
 test.describe("Verify the Update Booking endpoint [PUT /booking/:id]", () => {
-  F;
   test("Update an existing Booking with an Authorization Token", async ({ request }) => {
     const updatedBookingObject = {
       firstname: "Luke",
