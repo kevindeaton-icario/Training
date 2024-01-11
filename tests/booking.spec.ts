@@ -1,4 +1,4 @@
-import { test, expect, request } from "@playwright/test";
+import { test, expect } from "@playwright/test";
 
 test.describe("Verify the Get Booking Ids endpoint [GET /booking]", () => {
   test("Retrieving all Booking Ids", async ({ request }) => {
