@@ -79,7 +79,7 @@ test.describe("Verify the Create Booking endpoint [POST /booking]", () => {
   });
 });
 
-test.describe.only("Verify the Update Booking endpoint [PUT /booking/:id]", () => {
+test.describe("Verify the Update Booking endpoint [PUT /booking/:id]", () => {
   test("Update an existing Booking with an Authorization Token", async ({ request }) => {
     const updatedBookingObject = {
       firstname: "Luke",
